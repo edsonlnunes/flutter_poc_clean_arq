@@ -1,3 +1,5 @@
+import 'package:dartz/dartz.dart';
+import 'package:exemplo_arq_state/modules/search/domain/errors/domain.error.dart';
 import 'package:mockito/mockito.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -13,17 +15,22 @@ void main() {
   final useCase = SearchByTextUseCase(repository);
 
   test('Deve retornar uma lista de usuários', () async {
-    when(repository.searchByText(any)).thenAnswer((_) async => <User>[]);
+    when(repository.searchByText(any)).thenAnswer((_) async => Right(<User>[]));
 
-    final users = await useCase.execute('Edson');
-    expect(users, isA<List<User>>());
+    final usersOrError = await useCase.execute('Edson');
+    expect(usersOrError, isA<Right>());
+    expect(usersOrError.getOrElse(null), isA<List<User>>());
   });
 
   test('Deve retornar um erro ao receber um texto inválido', () async {
-    try {
-      await useCase.execute(null);
-    } catch (e) {
-      throwsA(e);
-    }
+    var usersOrError = await useCase.execute(null);
+
+    expect(usersOrError, isA<Left>());
+    expect(usersOrError.fold(id, id), isA<InvalidTextError>());
+
+    usersOrError = await useCase.execute('');
+
+    expect(usersOrError, isA<Left>());
+    expect(usersOrError.fold(id, id), isA<InvalidTextError>());
   });
 }
