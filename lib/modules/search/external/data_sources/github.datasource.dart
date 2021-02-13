@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:exemplo_arq_state/modules/search/domain/errors/search.error.dart';
 import 'package:exemplo_arq_state/modules/search/infra/contracts/data_sources/search_by_text_datasource.contract.dart';
 import 'package:exemplo_arq_state/modules/search/infra/models/result_user.dart';
 
@@ -12,7 +13,7 @@ class GithubDataSource implements ISearchByTextDataSource {
     final response =
         await dio.get('https://api.github.com/search/users?q=$text');
 
-    if (response.statusCode != 200) throw Exception();
+    if (response.statusCode != 200) throw DataSourceError('Erro na requisição');
 
     var items = response.data['items'] as List;
     var users = items?.map((e) => ResultUser.fromMap(e))?.toList() ?? [];

@@ -5,7 +5,7 @@ import 'package:exemplo_arq_state/modules/search/domain/entities/user.entity.dar
 class ResultUser extends User {
   ResultUser({
     String user,
-    String id,
+    int id,
     String image,
   }) : super(id: id, user: user, image: image);
 
@@ -21,9 +21,9 @@ class ResultUser extends User {
     if (map == null) return null;
 
     return ResultUser(
-      user: map['user'],
-      id: map['id'],
-      image: map['image'],
+      user: map['login'],
+      id: map['id'] as int,
+      image: map['avatar_url'],
     );
   }
 
