@@ -19,7 +19,6 @@ class SearchByTextRepository implements ISearchByTextRepository {
     } on DataSourceError catch (e) {
       return Left(e);
     } catch (e) {
-      print(e);
       return Left(DataSourceError());
     }
   }

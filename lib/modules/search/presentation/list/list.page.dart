@@ -1,36 +1,29 @@
 import 'package:dartz/dartz.dart';
-import 'package:dio/dio.dart';
 import 'package:exemplo_arq_state/modules/search/domain/contratcs/errors/exception_search.contract.dart';
 import 'package:exemplo_arq_state/modules/search/domain/entities/user.entity.dart';
 import 'package:exemplo_arq_state/modules/search/domain/errors/search.error.dart';
-import 'package:exemplo_arq_state/modules/search/domain/usecases/search_by_text.usecase.dart';
-import 'package:exemplo_arq_state/modules/search/external/data_sources/github.datasource.dart';
-import 'package:exemplo_arq_state/modules/search/infra/repositories/search_by_text.repository.dart';
-import 'package:exemplo_arq_state/modules/search/presentation/controller/app.controller.dart';
+import 'package:exemplo_arq_state/modules/search/presentation/controller/search.controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 
 class ListPage extends StatelessWidget {
-  final controller = AppController(
-    SearchByTextUseCase(
-      SearchByTextRepository(
-        GithubDataSource(
-          Dio(),
-        ),
-      ),
-    ),
-  );
+  final controller = Modular.get<SearchController>();
 
   @override
   Widget build(BuildContext context) {
+    print(controller);
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text('List Page'),
+      ),
       body: FutureBuilder<Either<IExceptionSearch, List<User>>>(
-        future: controller.useCase.execute('Edson'),
+        future: controller.useCase.execute('eds'),
         builder:
             (_, AsyncSnapshot<Either<IExceptionSearch, List<User>>> snapshot) {
           if (!snapshot.hasData || snapshot.data == null) {
             return Center(child: CircularProgressIndicator());
           }
+
           var resultOrFailure = snapshot.data;
 
           if (resultOrFailure.isLeft()) {
@@ -50,6 +43,12 @@ class ListPage extends StatelessWidget {
               return Text(users[index].user);
             },
           );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () {
+          Modular.to.pushNamed('/search/details');
         },
       ),
     );

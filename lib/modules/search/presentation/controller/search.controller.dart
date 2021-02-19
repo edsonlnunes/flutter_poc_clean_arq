@@ -1,7 +1,7 @@
 import 'package:exemplo_arq_state/modules/search/domain/contratcs/usescases/search_by_text_usecase.contract.dart';
 
-class AppController {
+class SearchController {
   final ISearchByTextUseCase useCase;
 
-  AppController(this.useCase);
+  SearchController(this.useCase);
 }

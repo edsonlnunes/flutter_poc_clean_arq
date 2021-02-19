@@ -10,14 +10,19 @@ class GithubDataSource implements ISearchByTextDataSource {
 
   @override
   Future<List<ResultUser>> searchByText(String text) async {
-    final response =
-        await dio.get('https://api.github.com/search/users?q=$text');
+    try {
+      final url = 'https://api.github.com/search/users?q=$text';
+      final response = await dio.get(url);
 
-    if (response.statusCode != 200) throw DataSourceError('Erro na requisição');
+      if (response.statusCode != 200)
+        throw DataSourceError('Erro na requisição');
 
-    var items = response.data['items'] as List;
-    var users = items?.map((e) => ResultUser.fromMap(e))?.toList() ?? [];
+      var items = response.data['items'] as List;
+      var users = items?.map((e) => ResultUser.fromMap(e))?.toList() ?? [];
 
-    return users;
+      return users;
+    } catch (e) {
+      throw DataSourceError();
+    }
   }
 }
